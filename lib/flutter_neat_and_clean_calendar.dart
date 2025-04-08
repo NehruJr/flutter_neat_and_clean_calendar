@@ -696,8 +696,7 @@ class _CalendarState extends State<Calendar> {
       (day) {
         if (day.hour > 0) {
           day = DateFormat("yyyy-MM-dd HH:mm:ssZZZ")
-              .parse(day.toString())
-              .toLocal();
+              .parse(day.toString()).toUtc();
           day = day.subtract(new Duration(hours: day.hour));
         }
 
@@ -723,7 +722,8 @@ class _CalendarState extends State<Calendar> {
               events: eventsMap![day],
               child: widget.dayBuilder!(context, day),
               date: day,
-              onDateSelected: () => handleSelectedDateAndUserCallback(day),
+              // onDateSelected: () => handleSelectedDateAndUserCallback(day),
+              onDateSelected: (){},
             ),
           );
         } else {
