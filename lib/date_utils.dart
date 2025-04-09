@@ -91,20 +91,19 @@ class Utils {
   ///
   /// [start] inclusive
   /// [end] exclusive
-  static Iterable<DateTime> daysInRange(DateTime start, DateTime end) sync* {
-    var i = start;
-    var offset = start.timeZoneOffset;
+ static Iterable<DateTime> daysInRange(DateTime start, DateTime end) sync* {
+    // Start at midnight on the first day to ensure consistent daily boundaries
+    var i = DateTime.utc(start.year, start.month, start.day);
+
     while (i.isBefore(end)) {
       yield i;
-      i = i.add(Duration(days: 1));
-      var timeZoneDiff = i.timeZoneOffset - offset;
-      if (timeZoneDiff.inSeconds != 0) {
-        offset = i.timeZoneOffset;
-        i = i.subtract(Duration(seconds: timeZoneDiff.inSeconds));
-      }
+
+      // Move to the next day by adding exactly 24 hours, then reset to midnight
+      final nextDay = i.add(Duration(days: 1));
+      i = DateTime.utc(nextDay.year, nextDay.month, nextDay.day);
     }
   }
-
+  
   /// Whether or not two times are on the same day.
   static bool isSameDay(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;
